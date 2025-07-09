@@ -33,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/agent-challenge:latest
+          tags: ghcr.io/heysomtee/agent-challenge:latest
