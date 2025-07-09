@@ -1,12 +1,8 @@
 FROM ollama/ollama:0.7.0
 
-# Qwen2.5:1.5b - Docker
+# Set environment variables
 ENV API_BASE_URL=http://127.0.0.1:11434/api
 ENV MODEL_NAME_AT_ENDPOINT=qwen2.5:1.5b
-
-# Qwen2.5:32b = Docker
-# ENV API_BASE_URL=http://127.0.0.1:11434/api
-# ENV MODEL_NAME_AT_ENDPOINT=qwen2.5:32b
 
 # Install system dependencies and Node.js
 RUN apt-get update && apt-get install -y \
@@ -16,23 +12,21 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g pnpm
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Copy package files
-# COPY .env.docker package.json pnpm-lock.yaml ./
+# Copy package files first (for caching and dependency installation)
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
 RUN pnpm install
 
-# Copy the rest of the application
+# Copy the rest of the application files
 COPY . .
 
 # Build the project
 RUN pnpm run build
 
-# Override the default entrypoint
+# Default entrypoint and command
 ENTRYPOINT ["/bin/sh", "-c"]
-
-# Start Ollama service and pull the model, then run the app
 CMD ["ollama serve & sleep 5 && ollama pull ${MODEL_NAME_AT_ENDPOINT} && node .mastra/output/index.mjs"]
