@@ -4,7 +4,7 @@
       "id": "agents",
       "args": {
         "gpu": true,
-        "image": "docker.io/yourusername/agent-challenge:latest",
+        "image": "ghcr.io/heysomtee/agent-challenge:latest",
         "expose": [
           {
             "port": 8080
